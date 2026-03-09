@@ -5,6 +5,7 @@ import CustomCursor from "./components/CustomCursor";
 import Home from "./sections/Home";
 import About from "./sections/About";
 import Skills from "./sections/Skills";
+import CircularGallery from "./components/CircularGallery";
 import Projects from "./sections/Projects";
 import Experience from "./sections/Experience";
 import Testimonials from "./sections/Testimonials";
@@ -29,6 +30,15 @@ export default function App() {
 
       <About />
       <Skills />
+      <div style={{ height: '600px', position: 'relative' }} className="bg-black">
+        <CircularGallery
+          bend={1}
+          textColor="#ffffff"
+          borderRadius={0}
+          scrollSpeed={3.3}
+          scrollEase={0.11}
+        />
+      </div>
       <Projects />
       <Experience />
       <Testimonials />
