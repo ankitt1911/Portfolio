@@ -8,7 +8,7 @@ import ParticleBackground from "../components/ParticlesBackground";
 
 const socials = [
   { Icon: FaLinkedinIn, label: "LinkedIn", href: "https://www.linkedin.com/in/ankit-kumar-yadav-71741a25b" },
-  { Icon: FaInstagram, label: "Instagram", href: "https://www.instagram.com/gauravbits/" },
+  // { Icon: FaInstagram, label: "Instagram", href: "https://www.instagram.com/gauravbits/" },
   { Icon: FaGithub, label: "GitHub", href: "https://github.com/ankitt1911" },
 ];
 
@@ -146,7 +146,7 @@ const Home = React.forwardRef((props, ref) => {
               transition={{ delay: 1.1, duration: 0.8 }}
             >
               <a
-                href="#projects"
+                // href="#projects"
                 className="px-6 py-3 rounded-full text-lg font-medium text-white 
                 bg-gradient-to-r from-[#1CD8D2] via-[#00bf8f] to-[#302b63]
                 shadow-lg hover:scale-105 transition-all"
@@ -154,7 +154,7 @@ const Home = React.forwardRef((props, ref) => {
                 View My Work
               </a>
               <a
-                href="/Resume.pdf"
+                // href="/Resume.pdf"
                 download
                 className="px-6 py-3 rounded-full text-lg font-medium text-black bg-white 
                 hover:bg-gray-200 shadow-lg hover:scale-105 transition-all"

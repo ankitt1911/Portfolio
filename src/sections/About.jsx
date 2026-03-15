@@ -54,7 +54,7 @@ export default function About() {
             </p>
 
             {/* Quick stats */}
-            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 max-w-xl">
+            {/* <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 max-w-xl">
               {[
                 { label: "Experience", value: "5+ years" },
                 { label: "Specialty", value: "Full Stack" },
@@ -74,7 +74,7 @@ export default function About() {
                   </div>
                 </motion.div>
               ))}
-            </div>
+            </div> */}
 
             {/* CTAs */}
             <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
