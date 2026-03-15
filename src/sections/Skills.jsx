@@ -1,6 +1,7 @@
 import { FaReact, FaHtml5, FaCss3Alt, FaBootstrap, FaGitAlt, FaGithub, FaNpm, FaNode } from 'react-icons/fa';
 import { SiNextdotjs, SiTailwindcss, SiExpress, SiFirebase, SiJavascript, SiMongodb, SiMysql, SiPostgresql, SiNodedotjs, SiMui, SiAxios, SiFramer, SiJsonwebtokens, SiTypescript, SiRedux, SiPostman, SiShadcnui, SiSocketdotio } from 'react-icons/si';
 import { MdEmail, MdSchedule } from 'react-icons/md';
+import { FcDataEncryption } from "react-icons/fc";
 import { VscJson } from 'react-icons/vsc';
 import { AiOutlineCloudServer } from 'react-icons/ai';
 import { BsFileEarmarkArrowUp } from 'react-icons/bs';
@@ -44,6 +45,8 @@ const categories = [
       { icon: <VscJson />, name: "Morgan" },
       { icon: <BsFileEarmarkArrowUp />, name: "Multer" },
       { icon: <MdSchedule />, name: "Node Cron" },
+      { icon: <AiOutlineCloudServer />, name: "REST API" },
+      { icon: <FcDataEncryption />, name: "Bcrypt" },
     ],
   },
   {

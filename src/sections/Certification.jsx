@@ -230,7 +230,7 @@ const Certification = () => {
   }, []);
 
   return (
-    <section id="certifications" className="relative bg-black text-white py-16 sm:py-24 overflow-hidden">
+    <section id="certifications" className="relative bg-black text-white py-16 sm:py-24 overflow-hidden ">
       {/* Background glow */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#302b63] via-[#00bf8f] to-[#1cd8d2] opacity-15 blur-[120px]" />
@@ -260,7 +260,7 @@ const Certification = () => {
 
         {/* Book */}
         <motion.div
-          className="flex justify-center"
+          className="flex justify-center "
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -279,7 +279,7 @@ const Certification = () => {
             maxShadowOpacity={0.5}
             showCover={true}
             mobileScrollSupport={true}
-            className="certification-book"
+            className="certification-book "
             style={{}}
             flippingTime={800}
             usePortrait={isMobile}
