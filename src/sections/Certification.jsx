@@ -220,14 +220,27 @@ const ImagePage = React.forwardRef(({ cert, pageNumber }, ref) => (
 
 const Certification = () => {
   const bookRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [screenSize, setScreenSize] = useState("desktop");
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
+    const check = () => {
+      const w = window.innerWidth;
+      if (w < 480) setScreenSize("xs");
+      else if (w < 768) setScreenSize("sm");
+      else setScreenSize("desktop");
+    };
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
+
+  const bookDimensions = {
+    xs: { width: 160, height: 240, minWidth: 130, maxWidth: 200, minHeight: 200, maxHeight: 300 },
+    sm: { width: 250, height: 350, minWidth: 200, maxWidth: 320, minHeight: 280, maxHeight: 420 },
+    desktop: { width: 450, height: 550, minWidth: 300, maxWidth: 550, minHeight: 400, maxHeight: 680 },
+  };
+
+  const dims = bookDimensions[screenSize];
 
   return (
     <section id="certifications" className="relative bg-black text-white py-16 sm:py-24 overflow-hidden ">
@@ -267,22 +280,22 @@ const Certification = () => {
           transition={{ duration: 0.8, delay: 0.3 }}
         >
           <HTMLFlipBook
-            key={isMobile ? "mobile" : "desktop"}
+            key={screenSize}
             ref={bookRef}
-            width={isMobile ? 250 : 450}
-            height={isMobile ? 350 : 550}
+            width={dims.width}
+            height={dims.height}
             size="stretch"
-            minWidth={isMobile ? 180 : 300}
-            maxWidth={isMobile ? 300 : 550}
-            minHeight={isMobile ? 260 : 400}
-            maxHeight={isMobile ? 420 : 680}
+            minWidth={dims.minWidth}
+            maxWidth={dims.maxWidth}
+            minHeight={dims.minHeight}
+            maxHeight={dims.maxHeight}
             maxShadowOpacity={0.5}
             showCover={true}
             mobileScrollSupport={true}
-            className="certification-book "
+            className="certification-book"
             style={{}}
             flippingTime={800}
-            usePortrait={isMobile}
+            usePortrait={false}
             startZIndex={0}
             autoSize={true}
             drawShadow={true}
