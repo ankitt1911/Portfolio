@@ -1,6 +1,9 @@
 import { FaReact, FaHtml5, FaCss3Alt, FaBootstrap, FaGitAlt, FaGithub, FaNpm, FaNode } from 'react-icons/fa';
 import { SiNextdotjs, SiTailwindcss, SiExpress, SiFirebase, SiJavascript, SiMongodb, SiMysql, SiPostgresql, SiNodedotjs, SiMui, SiAxios, SiFramer, SiJsonwebtokens, SiTypescript, SiRedux, SiPostman, SiShadcnui, SiSocketdotio } from 'react-icons/si';
-import { MdEmail } from 'react-icons/md';
+import { MdEmail, MdSchedule } from 'react-icons/md';
+import { VscJson } from 'react-icons/vsc';
+import { AiOutlineCloudServer } from 'react-icons/ai';
+import { BsFileEarmarkArrowUp } from 'react-icons/bs';
 import { motion } from 'framer-motion';
 
 
@@ -37,6 +40,10 @@ const categories = [
       { icon: <SiJsonwebtokens />, name: "JOI" },
       { icon: <MdEmail />, name: "Nodemailer" },
       { icon: <SiSocketdotio />, name: "Socket.io" },
+      { icon: <AiOutlineCloudServer />, name: "CORS" },
+      { icon: <VscJson />, name: "Morgan" },
+      { icon: <BsFileEarmarkArrowUp />, name: "Multer" },
+      { icon: <MdSchedule />, name: "Node Cron" },
     ],
   },
   {
