@@ -60,6 +60,31 @@
 
 
 
+/* react-pageflip internal elements */
+.certification-book .stf__parent {
+  background: transparent !important;
+}
+
+.certification-book .stf__wrapper {
+  background: transparent !important;
+}
+
+.certification-book .stf__block {
+  background: transparent !important;
+}
+
+.certification-book .stf__item {
+  background-color: #ffffff !important;
+}
+
+.certification-book .stf__page {
+  background-color: #ffffff !important;
+}
+
+.certification-book .stf__page > div {
+  background-color: #ffffff !important;
+}
+
 @media (max-width: 640px) {
   body > *:not(#contact):not(footer) {
     overflow-x: clip;
