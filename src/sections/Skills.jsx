@@ -1,5 +1,5 @@
 import { FaReact, FaHtml5, FaCss3Alt, FaBootstrap, FaGitAlt, FaGithub, FaNpm, FaNode } from 'react-icons/fa';
-import { SiNextdotjs, SiTailwindcss, SiExpress, SiFirebase, SiJavascript, SiMongodb, SiMysql, SiPostgresql, SiNodedotjs, SiMui, SiAxios, SiFramer, SiJsonwebtokens, SiTypescript, SiRedux, SiPostman, SiShadcnui, SiSocketdotio } from 'react-icons/si';
+import { SiNextdotjs, SiTailwindcss, SiExpress, SiFirebase, SiJavascript, SiMongodb, SiMysql, SiPostgresql, SiNodedotjs, SiMui, SiAxios, SiFramer, SiJsonwebtokens, SiTypescript, SiRedux, SiPostman, SiShadcnui, SiSocketdotio, SiVercel } from 'react-icons/si';
 import { MdEmail, MdSchedule } from 'react-icons/md';
 import { FcDataEncryption } from "react-icons/fc";
 import { VscJson } from 'react-icons/vsc';
@@ -65,6 +65,7 @@ const categories = [
       { icon: <FaGithub />, name: "GitHub" },
       { icon: <FaNpm />, name: "NPM" },
       { icon: <SiPostman />, name: "Postman" },
+      { icon: <SiVercel />, name: "Vercel" },
     ],
   },
 ];
