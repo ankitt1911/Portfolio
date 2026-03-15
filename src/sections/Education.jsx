@@ -5,14 +5,14 @@ const educations = [
   {
     degree: "10th Standard",
     school: "Chandra Public School-UP",
-    year: "2017",
+    year: "2018",
     description:
       "Built a strong foundation in Mathematics, Science, and Computer Science.",
   },
   {
     degree: "12th Standard (PCM)",
     school: "Chandra Public School-UP",
-    year: "2019",
+    year: "2020",
     description:
       "Specialized in Physics, Chemistry, and Mathematics. Strengthened analytical thinking.",
   },
