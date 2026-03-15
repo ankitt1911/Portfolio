@@ -160,8 +160,8 @@ const MusicPlayer = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-center space-y-2">
-      <p className="text-xs text-gray-300 italic">{infoText}</p>
+    <div className="fixed bottom-3 right-2 sm:bottom-6 sm:right-6 z-50 flex flex-col items-center space-y-1 sm:space-y-2">
+      <p className="text-[9px] sm:text-xs text-gray-300 italic max-w-[80px] sm:max-w-none text-center leading-tight">{infoText}</p>
 
       <audio
         ref={audioRef}
@@ -173,7 +173,7 @@ const MusicPlayer = () => {
       <button
         onClick={handleClick}
         onTouchStart={handleDoubleTapMobile}
-        className="p-4 rounded-full shadow-lg transition transform hover:scale-110"
+        className="p-2.5 sm:p-4 rounded-full shadow-lg transition transform hover:scale-110"
         style={{
           background: "linear-gradient(135deg, #00f0ff, #00ff80)",
           boxShadow: "0 0 15px #00f0ff, 0 0 25px #00ff80",
@@ -181,7 +181,7 @@ const MusicPlayer = () => {
         }}
         aria-label={isPlaying ? "Pause music" : "Play music"}
       >
-        {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
+        {isPlaying ? <FaPause className="w-3.5 h-3.5 sm:w-5 sm:h-5" /> : <FaPlay className="w-3.5 h-3.5 sm:w-5 sm:h-5" />}
       </button>
     </div>
   );
