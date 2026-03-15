@@ -7,7 +7,9 @@ import About from "./sections/About";
 import Skills from "./sections/Skills";
 import CircularGallery from "./components/CircularGallery";
 import Projects from "./sections/Projects";
+import Education from "./sections/Education";
 import Experience from "./sections/Experience";
+import Certification from "./sections/Certification";
 import Testimonials from "./sections/Testimonials";
 import Contact from "./sections/Contact";
 import Footer from "./sections/Footer";
@@ -30,6 +32,9 @@ export default function App() {
 
       <About />
       <Skills />
+       <Experience />
+      <Education />
+      <Certification />
       <div style={{ height: '600px', position: 'relative' }} className="bg-black">
         <CircularGallery
           bend={1}
@@ -40,7 +45,7 @@ export default function App() {
         />
       </div>
       <Projects />
-      <Experience />
+     
       <Testimonials />
       <Contact />
       <Footer />
