@@ -4,26 +4,19 @@ import { useState } from "react";
 // Importing motion component from Framer Motion for animations
 import { motion } from "framer-motion";
 
-// Importing EmailJS SDK
-import emailjs from "@emailjs/browser";
-
 // Importing Particles Background (same as Home component)
 import ParticlesBackground from "../components/ParticlesBackground.jsx";
 
 // Importing the contact image asset
 import Astra from "../assets/Astra.png";
 
-// Reading EmailJS credentials from environment variables (Vite)
-const SERVICE_ID = import.meta.env.VITE_SERVICE_ID;
-const TEMPLATE_ID = import.meta.env.VITE_TEMPLATE_ID;
-const PUBLIC_KEY = import.meta.env.VITE_PUBLIC_KEY;
+const FORMSPREE_URL = "https://formspree.io/f/xjkwqwne";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     service: "",
-    budget: "",
     idea: "",
   });
 
@@ -32,8 +25,6 @@ export default function Contact() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    if (name === "budget" && value && !/^\d+$/.test(value)) return;
 
     setFormData((p) => ({ ...p, [name]: value }));
 
@@ -48,9 +39,6 @@ export default function Contact() {
       (f) => !formData[f].trim() && (newErrors[f] = "Fill this field")
     );
 
-    if (formData.service !== "other" && !formData.budget.trim())
-      newErrors.budget = "Fill this field";
-
     setErrors(newErrors);
     return !Object.keys(newErrors).length;
   };
@@ -63,21 +51,21 @@ export default function Contact() {
     setStatus("sending");
 
     try {
-      await emailjs.send(
-        SERVICE_ID,
-        TEMPLATE_ID,
-        {
-          ...formData,
-          from_name: formData.name,
-          reply_to: formData.email,
-        },
-        PUBLIC_KEY
-      );
+      const form = e.target;
+      const response = await fetch(FORMSPREE_URL, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" },
+      });
 
-      setStatus("success");
-      setFormData({name: "",email: "",service: "",budget: "",idea: ""});
+      if (response.ok) {
+        setStatus("success");
+        setFormData({ name: "", email: "", service: "", budget: "", idea: "" });
+      } else {
+        setStatus("error");
+      }
     } catch (err) {
-      console.error("EmailJS Error:", err);
+      console.error("Formspree Error:", err);
       setStatus("error");
     }
   };
@@ -190,30 +178,6 @@ export default function Contact() {
                 <p className="text-red-500 text-xs">{errors.service}</p>
               )}
             </div>
-
-            {/* Budget field */}
-            {formData.service && formData.service !== "other" && (
-              <div className="flex flex-col">
-                <label className="mb-1">
-                  Budget <span className="text-red-500">*</span>
-                </label>
-
-                <input
-                  type="text"
-                  name="budget"
-                  placeholder="Your Budget"
-                  value={formData.budget}
-                  onChange={handleChange}
-                  className={`p-3 rounded-md bg-white/10 border ${
-                    errors.budget ? "border-red-500" : "border-gray-500"
-                  } text-white focus:outline-none focus:border-blue-500`}
-                />
-
-                {errors.budget && (
-                  <p className="text-red-500 text-xs">{errors.budget}</p>
-                )}
-              </div>
-            )}
 
             {/* Idea textarea */}
             <div className="flex flex-col">

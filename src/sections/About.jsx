@@ -50,7 +50,10 @@ export default function About() {
             </p>
 
             <p className="mt-4 text-gray-300 leading-relaxed text-base sm:text-lg max-w-2xl md:max-w-3xl">
-              I build scalable, modern applications with a strong focus on clean architecture, delightful UX, and performance. My toolkit spans Java, React, Next.js, TypeScript, Tailwind CSS, and FastAPI—bringing ideas to life from concept to production with robust APIs and smooth interfaces.
+              {/* I build scalable, modern applications with a strong focus on clean architecture, delightful UX, and performance. My toolkit spans Java, React, Next.js, TypeScript, Tailwind CSS, and FastAPI—bringing ideas to life from concept to production with robust APIs and smooth interfaces. */}
+              
+I’m a Full Stack Developer (MERN) with experience building scalable, secure web applications for both product teams and freelance clients using React, Node.js, Express.js, and MongoDB.
+
             </p>
 
             {/* Quick stats */}
@@ -109,10 +112,11 @@ export default function About() {
               About Me
             </h3>
             <p className="text-gray-300 leading-relaxed text-base sm:text-lg">
-             I’m a Software Developer, Content Creator, and Web Developer — passionate about building fast, resilient applications and sharing coding insights on Instagram and YouTube.
+            I work across the full development lifecycle—developing responsive React interfaces, designing RESTful APIs, implementing JWT-based authentication, and optimizing databases for performance. 
+            I enjoy solving real business problems, delivering production-ready solutions, and collaborating with stakeholders to build reliable, maintainable products.
             </p>
             <p className="mt-4 text-gray-400 text-base sm:text-lg">
-              I love turning ideas into scalable, user‑friendly products that make an impact. 
+            Open to Full Stack Developer / MERN Developer opportunities and freelance collaborations.
             </p>
           </motion.div>
         </div>
