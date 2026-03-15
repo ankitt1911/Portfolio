@@ -11,6 +11,7 @@ import Education from "./sections/Education";
 import Experience from "./sections/Experience";
 import Certification from "./sections/Certification";
 import Testimonials from "./sections/Testimonials";
+import Achievements from "./sections/Achievements";
 import Contact from "./sections/Contact";
 import Footer from "./sections/Footer";
 import MusicPlayer from "./components/MusicPlayer";
@@ -44,9 +45,10 @@ export default function App() {
           scrollEase={0.11}
         />
       </div>
-      <Projects />
+      {/* <Projects /> */}
      
-      <Testimonials />
+      {/* <Testimonials /> */}
+      <Achievements />
       <Contact />
       <Footer />
     </div>
