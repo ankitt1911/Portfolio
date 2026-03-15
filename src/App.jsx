@@ -36,19 +36,17 @@ export default function App() {
        <Experience />
       <Education />
       <Certification />
-      <div style={{ height: '600px', position: 'relative' }} className="bg-black">
+       {/* <Testimonials /> */}
+      <Achievements />
+         <div style={{ height: '600px', position: 'relative' }} className="bg-black">
         <CircularGallery
-          bend={1}
+          bend={0}
           textColor="#ffffff"
           borderRadius={0}
           scrollSpeed={3.3}
           scrollEase={0.11}
         />
       </div>
-      {/* <Projects /> */}
-     
-      {/* <Testimonials /> */}
-      <Achievements />
       <Contact />
       <Footer />
     </div>
