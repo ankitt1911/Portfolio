@@ -10,7 +10,7 @@ import Projects from "./sections/Projects";
 import Education from "./sections/Education";
 import Experience from "./sections/Experience";
 import Certification from "./sections/Certification";
-import Testimonials from "./sections/Testimonials";
+// import Testimonials from "./sections/Testimonials";
 import Achievements from "./sections/Achievements";
 import Contact from "./sections/Contact";
 import Footer from "./sections/Footer";

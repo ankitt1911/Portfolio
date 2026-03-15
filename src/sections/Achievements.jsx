@@ -143,7 +143,7 @@ function AchievementCard({ item, index }) {
 
           <FloatingParticles color={item.color} />
 
-          <div className="relative z-10 p-8 sm:p-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
+          <div className="relative z-10 p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
             {/* Medal / Icon Section */}
             <div className="flex flex-col items-center gap-3 shrink-0">
               {/* Animated ring behind icon */}
@@ -162,7 +162,7 @@ function AchievementCard({ item, index }) {
                   }}
                 />
                 <motion.div
-                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center text-5xl sm:text-6xl"
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-3xl sm:text-4xl"
                   style={{
                     background: `radial-gradient(circle at 30% 30%, ${item.bgGlow}, transparent 70%)`,
                     color: item.color,
@@ -187,24 +187,24 @@ function AchievementCard({ item, index }) {
             <div className="flex-1 text-center sm:text-left">
               {/* Level badge */}
               <motion.span
-                className={`inline-block px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-3 bg-gradient-to-r ${item.gradient} text-black`}
+                className={`inline-block px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest mb-2 bg-gradient-to-r ${item.gradient} text-black`}
                 whileHover={{ scale: 1.05 }}
               >
                 {item.level}
               </motion.span>
 
               <h3
-                className="text-2xl sm:text-3xl font-extrabold mb-2"
+                className="text-xl sm:text-2xl font-extrabold mb-1"
                 style={{ color: item.color }}
               >
                 {item.title}
               </h3>
 
-              <p className="text-white/50 text-sm font-medium uppercase tracking-wider mb-3">
+              <p className="text-white/50 text-xs font-medium uppercase tracking-wider mb-2">
                 {item.subtitle}
               </p>
 
-              <p className="text-white/70 text-sm sm:text-base leading-relaxed max-w-lg">
+              <p className="text-white/70 text-xs sm:text-sm leading-relaxed max-w-lg">
                 {item.description}
               </p>
 
@@ -283,7 +283,7 @@ export default function Achievements() {
       </div>
 
       {/* Achievement Cards */}
-      <div className="relative z-10 w-full max-w-3xl flex flex-col gap-8">
+      <div className="relative z-10 w-full max-w-2xl flex flex-col gap-5">
         {achievements.map((item, i) => (
           <AchievementCard key={item.title} item={item} index={i} />
         ))}
