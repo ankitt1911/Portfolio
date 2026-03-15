@@ -302,7 +302,7 @@ class App {
     this.onResize();
     this.createGeometry();
     this.createMedias(items, bend, textColor, borderRadius, font);
-    this.autoScrollSpeed = scrollSpeed * 0.02;
+    this.autoScrollSpeed = scrollSpeed * 0.01;
     this.update();
     this.addEventListeners();
   }
