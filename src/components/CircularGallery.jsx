@@ -458,7 +458,7 @@ export default function CircularGallery({
   borderRadius = 0.05,
   font = 'bold 30px Figtree',
   scrollSpeed = 1,
-  scrollEase = 0.05
+  scrollEase = 0.01
 }) {
   const containerRef = useRef(null);
   useEffect(() => {
