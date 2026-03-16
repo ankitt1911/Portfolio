@@ -31,7 +31,7 @@ const glowVariants = {
 
 const Home = React.forwardRef((props, ref) => {
   const roles = useMemo(
-    () => ["Software Developer", "Web Developer", "Content Creator"],
+    () => ["Software Developer", "Web Developer",],
     []
   );
   const [index, setIndex] = useState(0);
@@ -154,7 +154,7 @@ const Home = React.forwardRef((props, ref) => {
                 View My Work
               </a>
               <a
-                // href="/Resume.pdf"
+                href="/Resume-Ankit.pdf"
                 download
                 className="px-6 py-3 rounded-full text-lg font-medium text-black bg-white 
                 hover:bg-gray-200 shadow-lg hover:scale-105 transition-all"
