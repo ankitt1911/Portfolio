@@ -1,73 +1,11 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 import { motion } from "framer-motion";
+import SectionHeading from "../components/ui/SectionHeading";
+import useMediaQuery from "../hooks/useMediaQuery";
+import { certifications } from "../data/certifications";
 
-const certifications = [
-  {
-    title: "Frontend Web Developer - Modern HTML, CSS, JavaScript",
-    issuer: "Udemy",
-    date: "Jul 2025",
-    description:
-      "Professional certification covering modern front-end development including HTML5, CSS3, and JavaScript fundamentals used to build responsive and interactive web applications.",
-    skills: ["HTML5", "CSS3", "JavaScript", "Responsive Design"],
-    image: "/certification/Frontend web developer.png",
-  },
-  {
-    title: "Prompt Engineering",
-    issuer: "Udemy",
-    date: "Jun 2025",
-    description:
-      "Certification focused on crafting effective prompts for AI models, exploring prompt optimization techniques and improving AI response quality.",
-    skills: ["Prompt Engineering", "Artificial Intelligence", "LLMs"],
-    image: "/certification/Prompt Engineering.png",
-  },
-  {
-    title: "SQL Bootcamp",
-    issuer: "LetsUpgrade",
-    date: "Jun 2025",
-    description:
-      "Comprehensive SQL training covering database querying, relational database concepts, joins, and database management fundamentals.",
-    skills: ["SQL", "DBMS", "Joins", "Database Queries"],
-    image: "/certification/SQL Bootcamp.png",
-  },
-  {
-    title: "AI Crop Suggestion and Disease Predictor with Fertilizer Recommendation",
-    issuer: "International Journal for Research Trends and Innovation (IJRTI)",
-    date: "Apr 2025",
-    description:
-      "Research publication focused on developing an AI-based system that predicts crop diseases and recommends suitable crops and fertilizers using machine learning techniques.",
-    skills: [
-      "Machine Learning",
-      "Agriculture AI",
-      "Disease Prediction",
-      "Data Analysis",
-    ],
-    image: "/certification/Paper.png",
-  },
-  {
-    title: "Database Management System",
-    issuer: "Infosys Springboard",
-    date: "Feb 2024",
-    description:
-      "Comprehensive understanding of Database Management Systems including relational models, normalization, and query optimization.",
-    skills: ["SQL", "Normalization", "ER Diagrams", "Query Optimization"],
-    image: "/certification/Dbms.png",
-  },
-  {
-    title: "Threat Intelligence and Hunting",
-    issuer: "IBM",
-    date: "Nov 2023",
-    description:
-      "Cybersecurity certification covering threat detection, incident response, and proactive threat hunting methodologies.",
-    skills: [
-      "Cybersecurity",
-      "Threat Detection",
-      "Incident Response",
-      "SIEM",
-    ],
-    image: "/certification/Threat-Hunting.png",
-  },
-];
+
 const PageCover = React.forwardRef(({ children }, ref) => (
   <div
     ref={ref}
@@ -220,19 +158,9 @@ const ImagePage = React.forwardRef(({ cert, pageNumber }, ref) => (
 
 const Certification = () => {
   const bookRef = useRef(null);
-  const [screenSize, setScreenSize] = useState("desktop");
-
-  useEffect(() => {
-    const check = () => {
-      const w = window.innerWidth;
-      if (w < 480) setScreenSize("xs");
-      else if (w < 768) setScreenSize("sm");
-      else setScreenSize("desktop");
-    };
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
+  const isXs = useMediaQuery("(max-width: 479px)");
+  const isSm = useMediaQuery("(max-width: 767px)");
+  const screenSize = isXs ? "xs" : isSm ? "sm" : "desktop";
 
   const bookDimensions = {
     xs: { width: 160, height: 240, minWidth: 130, maxWidth: 200, minHeight: 200, maxHeight: 300 },
@@ -251,25 +179,13 @@ const Certification = () => {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4">
-        {/* Title */}
-        <motion.h2
-          className="text-3xl sm:text-4xl font-bold text-center bg-gradient-to-r from-[#1cd8d2] via-[#00bf8f] to-[#302b63] bg-clip-text text-transparent mb-2"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          Certifications
-        </motion.h2>
-        <motion.p
-          className="text-white/60 text-xs sm:text-sm text-center mb-10 max-w-md mx-auto"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          Click on the pages to flip through my certifications
-        </motion.p>
+        <SectionHeading
+          index="06"
+          eyebrow="certifications"
+          title="Certifications"
+          subtitle="Click or drag the pages to flip through my certifications"
+          className="mb-12"
+        />
 
         {/* Book */}
         <motion.div
@@ -343,13 +259,13 @@ const Certification = () => {
         >
           <button
             onClick={() => bookRef.current?.pageFlip()?.flipPrev()}
-            className="px-4 py-2 text-xs rounded-full border border-[#1cd8d2]/30 text-[#1cd8d2]/70 hover:bg-[#1cd8d2]/10 transition-colors"
+            className="px-5 py-2 font-mono text-xs rounded-full border border-brand-cyan/30 text-brand-cyan/80 hover:bg-brand-cyan/10 hover:border-brand-cyan hover:shadow-[0_0_16px_rgba(28,216,210,0.35)] transition-all"
           >
             ← Prev
           </button>
           <button
             onClick={() => bookRef.current?.pageFlip()?.flipNext()}
-            className="px-4 py-2 text-xs rounded-full border border-[#1cd8d2]/30 text-[#1cd8d2]/70 hover:bg-[#1cd8d2]/10 transition-colors"
+            className="px-5 py-2 font-mono text-xs rounded-full border border-brand-cyan/30 text-brand-cyan/80 hover:bg-brand-cyan/10 hover:border-brand-cyan hover:shadow-[0_0_16px_rgba(28,216,210,0.35)] transition-all"
           >
             Next →
           </button>

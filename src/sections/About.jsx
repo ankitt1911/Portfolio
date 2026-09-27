@@ -1,5 +1,62 @@
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { animate, motion, useInView } from "framer-motion";
 import p from "../assets/aky.jpeg";
+import SectionHeading from "../components/ui/SectionHeading";
+import SpotlightCard from "../components/ui/SpotlightCard";
+import MagneticButton from "../components/ui/MagneticButton";
+import Reveal from "../components/ui/Reveal";
+import { profile } from "../data/profile";
+import { experiences } from "../data/experience";
+import { allSkills } from "../data/skills";
+
+const stats = [
+  { value: experiences.length, suffix: "", label: "Engineering roles" },
+  { value: new Set(allSkills.map((s) => s.name)).size, suffix: "+", label: "Technologies" },
+  { value: 0, suffix: "", label: "Full-stack specialty", text: "MERN" },
+  { value: profile.since, suffix: "", label: "Shipping professionally since" },
+];
+
+function Counter({ value, suffix, text }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.6 });
+
+  useEffect(() => {
+    if (!inView || text || !ref.current) return;
+    const from = value > 1000 ? value - 25 : 0;
+    const controls = animate(from, value, {
+      duration: 1.6,
+      ease: "easeOut",
+      onUpdate: (v) => {
+        if (ref.current) ref.current.textContent = `${Math.round(v)}${suffix}`;
+      },
+    });
+    return () => controls.stop();
+  }, [inView, value, suffix, text]);
+
+  return (
+    <span ref={ref} className="text-3xl sm:text-4xl font-extrabold text-gradient">
+      {text ?? `${value}${suffix}`}
+    </span>
+  );
+}
+
+function AboutJson() {
+  return (
+    <pre className="font-mono text-[11px] sm:text-[13px] leading-relaxed whitespace-pre-wrap break-words p-5">
+      <span className="tok-com">{"// about.json"}</span>
+      {"\n"}
+      <span className="tok-pun">{"{"}</span>
+      {"\n  "}<span className="tok-prop">"name"</span><span className="tok-pun">: </span><span className="tok-str">"{profile.name}"</span><span className="tok-pun">,</span>
+      {"\n  "}<span className="tok-prop">"role"</span><span className="tok-pun">: </span><span className="tok-str">"{profile.title}"</span><span className="tok-pun">,</span>
+      {"\n  "}<span className="tok-prop">"based"</span><span className="tok-pun">: </span><span className="tok-str">"{profile.location}"</span><span className="tok-pun">,</span>
+      {"\n  "}<span className="tok-prop">"stack"</span><span className="tok-pun">: [</span><span className="tok-str">"MongoDB"</span><span className="tok-pun">, </span><span className="tok-str">"Express"</span><span className="tok-pun">, </span><span className="tok-str">"React"</span><span className="tok-pun">, </span><span className="tok-str">"Node"</span><span className="tok-pun">],</span>
+      {"\n  "}<span className="tok-prop">"loves"</span><span className="tok-pun">: [</span><span className="tok-str">"clean APIs"</span><span className="tok-pun">, </span><span className="tok-str">"fast UIs"</span><span className="tok-pun">, </span><span className="tok-str">"secure auth"</span><span className="tok-pun">],</span>
+      {"\n  "}<span className="tok-prop">"openToWork"</span><span className="tok-pun">: </span><span className="tok-num">true</span>
+      {"\n"}
+      <span className="tok-pun">{"}"}</span>
+    </pre>
+  );
+}
 
 export default function About() {
   return (
@@ -8,120 +65,94 @@ export default function About() {
       className="min-h-screen w-full flex items-center justify-center relative bg-black text-white overflow-hidden"
       aria-label="About me"
     >
-      {/* Layered neon background accents */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-10 -left-10 w-[360px] h-[360px] rounded-full bg-gradient-to-r from-[#302b63] via-[#00bf8f] to-[#1CD8D2] opacity-20 blur-[120px] animate-pulse" />
-        <div className="absolute bottom-0 right-10 w-[420px] h-[420px] rounded-full bg-gradient-to-r from-[#1CD8D2] via-[#00bf8f] to-[#302b63] opacity-15 blur-[140px] animate-pulse delay-300" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-20 w-[220px] h-[220px] rounded-full bg-gradient-to-r from-[#00bf8f] to-[#1CD8D2] opacity-10 blur-[100px]" />
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute -top-10 -left-10 w-[360px] h-[360px] rounded-full bg-gradient-to-r from-brand-indigo via-brand-green to-brand-cyan opacity-20 blur-[120px] animate-aurora" />
+        <div className="absolute bottom-0 right-10 w-[420px] h-[420px] rounded-full bg-gradient-to-r from-brand-cyan via-brand-green to-brand-indigo opacity-15 blur-[140px] animate-aurora [animation-delay:-7s]" />
       </div>
 
-      {/* Content container */}
-      <div className="relative z-10 max-w-6xl w-full mx-auto px-6 md:px-10 lg:px-12 py-20 flex flex-col gap-12">
-        
-        {/* Profile header */}
-        <motion.div
-          className="flex flex-col md:flex-row items-center md:items-stretch gap-8"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true, amount: 0.4 }}
-        >
-          {/* Avatar / Card */}
-          <motion.div
-            className="relative w-[160px] h-[160px] md:w-[200px] md:h-[200px] rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-[#1CD8D2]/20 to-[#302b63]/20 border border-[#1CD8D2]/25"
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 200, damping: 18 }}
-            aria-hidden="true"
-          >
-            {/* Replace with your actual avatar image */}
-            
-            <div className="absolute inset-0 " />
-           
-            <img src={p} alt="test" />
-          </motion.div>
+      <div className="relative z-10 max-w-6xl w-full mx-auto px-6 md:px-10 lg:px-12 py-24 flex flex-col gap-14">
+        <SectionHeading index="01" eyebrow="about" title="Who I Am" subtitle="Frontend polish, backend muscle — one developer, the whole stack." />
 
-          {/* Name + Role + Bio + CTAs */}
-          <div className="flex-1 flex flex-col justify-center text-center md:text-left">
-            <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#1CD8D2] via-[#00bf8f] to-[#302b63]">
-              Ankit Kumar Yadav
-            </h2>
-            <p className="mt-2 text-lg sm:text-xl text-white/90 font-semibold">
-              Full Stack Developer
-            </p>
-
-            <p className="mt-4 text-gray-300 leading-relaxed text-base sm:text-lg max-w-2xl md:max-w-3xl">
-              {/* I build scalable, modern applications with a strong focus on clean architecture, delightful UX, and performance. My toolkit spans Java, React, Next.js, TypeScript, Tailwind CSS, and FastAPI—bringing ideas to life from concept to production with robust APIs and smooth interfaces. */}
-              
-I’m a Full Stack Developer (MERN) with experience building scalable, secure web applications for both product teams and freelance clients using React, Node.js, Express.js, and MongoDB.
-
-            </p>
-
-            {/* Quick stats */}
-            {/* <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 max-w-xl">
-              {[
-                { label: "Experience", value: "5+ years" },
-                { label: "Specialty", value: "Full Stack" },
-                { label: "Focus", value: "Performance & UX" },
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center"
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.05 * i }}
-                  viewport={{ once: true, amount: 0.3 }}
-                >
-                  <div className="text-sm text-gray-400">{item.label}</div>
-                  <div className="text-base font-semibold text-white">
-                    {item.value}
-                  </div>
-                </motion.div>
-              ))}
-            </div> */}
-
-            {/* CTAs */}
-            <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
-              <a
-                href="#projects"
-                className="inline-flex items-center justify-center rounded-lg bg-white text-black font-semibold px-5 py-3 hover:bg-gray-200 transition"
-                aria-label="View my projects"
+        <div className="grid lg:grid-cols-[auto_1fr] gap-10 items-center">
+          {/* Photo with rotating conic border */}
+          <Reveal x={-40} y={0} className="mx-auto">
+            <div className="relative w-[200px] h-[200px] md:w-[260px] md:h-[260px] rounded-3xl p-[2px] overflow-hidden">
+              <div
+                aria-hidden="true"
+                className="absolute inset-[-50%] animate-spin-slow"
+                style={{ background: "conic-gradient(from 0deg, transparent 0 40%, #1CD8D2, #00bf8f, transparent 70%)" }}
+              />
+              <motion.div
+                className="relative h-full w-full rounded-[22px] overflow-hidden bg-black"
+                whileHover={{ scale: 1.03 }}
+                transition={{ type: "spring", stiffness: 200, damping: 18 }}
               >
-                View Projects
-              </a>
-              <a
-                href="#contact"
-                className="inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white px-5 py-3 hover:bg-white/20 transition"
-                aria-label="Get in touch"
-              >
-                Get in Touch
-              </a>
+                <img src={p} alt="Portrait of Ankit Kumar Yadav" className="h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <span className="absolute bottom-3 left-3 font-mono text-[11px] text-brand-cyan bg-black/60 px-2 py-0.5 rounded">
+                  ● online
+                </span>
+              </motion.div>
             </div>
-          </div>
-        </motion.div>
+          </Reveal>
 
-        {/* Body copy only — removed skills chip grid */}
-        <div className="grid md:grid-cols-1">
-          <motion.div
-            className="text-center md:text-left"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true, amount: 0.4 }}
-          >
-            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-              About Me
-            </h3>
-            <p className="text-gray-300 leading-relaxed text-base sm:text-lg">
-            I work across the full development lifecycle—developing responsive React interfaces, designing RESTful APIs, implementing JWT-based authentication, and optimizing databases for performance. 
-            I enjoy solving real business problems, delivering production-ready solutions, and collaborating with stakeholders to build reliable, maintainable products.
-            </p>
-            <p className="mt-4 text-gray-400 text-base sm:text-lg">
-            Open to Full Stack Developer / MERN Developer opportunities and freelance collaborations.
-            </p>
-          </motion.div>
+          <div className="flex flex-col gap-6 text-center lg:text-left">
+            <Reveal>
+              <h3 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                {profile.name}
+                <span className="block mt-1 text-lg sm:text-xl font-mono font-medium text-brand-cyan">
+                  {"<"}
+                  {profile.title}
+                  {" />"}
+                </span>
+              </h3>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="text-gray-300 leading-relaxed text-base sm:text-lg">{profile.bio}</p>
+            </Reveal>
+            <Reveal delay={0.2}>
+              <p className="text-gray-400 leading-relaxed text-base sm:text-lg">{profile.bioLong}</p>
+            </Reveal>
+            <Reveal delay={0.3}>
+              <p className="text-brand-green/90 font-mono text-sm">{"// "}{profile.availability}</p>
+            </Reveal>
+            <Reveal delay={0.4}>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
+                <MagneticButton href="#architecture">See How I Build</MagneticButton>
+                <MagneticButton href="#contact" variant="ghost">
+                  Get in Touch
+                </MagneticButton>
+              </div>
+            </Reveal>
+          </div>
         </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.map((s, i) => (
+            <Reveal key={s.label} delay={i * 0.08}>
+              <SpotlightCard className="rounded-2xl bg-white/[0.03] p-5 h-full">
+                <div className="flex flex-col gap-1">
+                  <Counter value={s.value} suffix={s.suffix} text={s.text} />
+                  <span className="text-xs sm:text-sm text-white/60">{s.label}</span>
+                </div>
+              </SpotlightCard>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal>
+          <SpotlightCard className="rounded-2xl bg-[#05080a]/80 overflow-hidden">
+            <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-white/10">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+              <span className="ml-2 font-mono text-[11px] text-white/40">~/ankit/about.json</span>
+            </div>
+            <AboutJson />
+          </SpotlightCard>
+        </Reveal>
       </div>
     </section>
   );
 }
-

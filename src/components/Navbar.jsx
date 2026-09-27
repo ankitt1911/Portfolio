@@ -1,59 +1,41 @@
-import { useState, useEffect, useRef } from "react";
-import OverlayMenu from "./OverlayMenu";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { FiMenu } from "react-icons/fi";
-import Logo from "../assets/Logo.png"; // Adjust path
+import OverlayMenu from "./OverlayMenu";
+import ScrollProgress from "./ui/ScrollProgress";
+import MagneticButton from "./ui/MagneticButton";
+import useActiveSection from "../hooks/useActiveSection";
+import { sectionIds } from "../data/sections";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [visible, setVisible] = useState(true);
-  const [forceVisible, setForceVisible] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const lastScrollY = useRef(0);
   const timerId = useRef(null);
-
-  useEffect(() => {
-    const homeSection = document.querySelector("#home");
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setForceVisible(true);
-          setVisible(true); // Always visible on homepage
-        } else {
-          setForceVisible(false);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (homeSection) observer.observe(homeSection);
-
-    return () => {
-      if (homeSection) observer.unobserve(homeSection);
-    };
-  }, []);
+  const active = useActiveSection(sectionIds);
+  const onHome = active === "home";
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   useEffect(() => {
     const handleScroll = () => {
-      // If on homepage, never hide navbar
-      if (forceVisible) {
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 50);
+
+      // On the hero the navbar always stays visible
+      if (currentScrollY < window.innerHeight * 0.9) {
         setVisible(true);
+        lastScrollY.current = currentScrollY;
         return;
       }
 
-      const currentScrollY = window.scrollY;
-
       if (currentScrollY > lastScrollY.current) {
-        // scrolling down -> hide
         setVisible(false);
       } else {
-        // scrolling up -> show
         setVisible(true);
-
-        // hide again after 3sec idle
+        // hide again after 3s idle
         if (timerId.current) clearTimeout(timerId.current);
-        timerId.current = setTimeout(() => {
-          setVisible(false);
-        }, 3000);
+        timerId.current = setTimeout(() => setVisible(false), 3000);
       }
 
       lastScrollY.current = currentScrollY;
@@ -64,46 +46,62 @@ export default function Navbar() {
       window.removeEventListener("scroll", handleScroll);
       if (timerId.current) clearTimeout(timerId.current);
     };
-  }, [forceVisible]);
+  }, []);
 
   return (
     <>
+      <ScrollProgress />
       <nav
-        className={`fixed top-0 left-0 w-full flex items-center justify-between px-6 py-4 z-50 transition-transform duration-300 ${
+        className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 z-50 transition-all duration-300 ${
           visible ? "translate-y-0" : "-translate-y-full"
-        }`}
+        } ${scrolled && !onHome ? "bg-black/50 backdrop-blur-md border-b border-white/5" : "bg-transparent"}`}
       >
-        {/* Logo */}
-        <div className="flex items-center space-x-2">
-          {/* <img src={Logo} alt="Logo" className="w-8 h-8" /> */}
-          <div className="text-2xl font-bold text-white hidden sm:block">
+        {/* Logo + breadcrumb */}
+        <div className="flex items-center gap-4 min-w-0">
+          <a href="#home" className="font-mono text-lg sm:text-xl font-bold text-white whitespace-nowrap" aria-label="Back to top">
+            <span className="text-brand-cyan">&lt;</span>
             Ankit
+            <span className="text-brand-cyan"> /&gt;</span>
+            <span className="inline-block w-[2px] h-[1em] ml-1 bg-brand-green align-[-0.15em] animate-blink" />
+          </a>
+          <div className="hidden md:flex font-mono text-xs text-white/40 overflow-hidden">
+            <span>~/portfolio/</span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={active}
+                className="text-brand-cyan"
+                initial={{ y: 12, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -12, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+              >
+                {active}
+              </motion.span>
+            </AnimatePresence>
           </div>
         </div>
 
         {/* Menu Button */}
-        <div className="block lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2">
+        <div className="block lg:absolute lg:left-1/2 lg:-translate-x-1/2">
           <button
             onClick={() => setMenuOpen(true)}
-            className="text-white text-3xl focus:outline-none"
+            className="group flex items-center gap-2 text-white text-3xl rounded-full p-1"
             aria-label="Open menu"
+            aria-expanded={menuOpen}
           >
-            <FiMenu />
+            <FiMenu className="transition-transform duration-300 group-hover:rotate-90 group-hover:text-brand-cyan" />
           </button>
         </div>
 
         {/* Contact Button */}
         <div className="hidden lg:block">
-          <a
-            href="#contact"
-            className="bg-gradient-to-r from-pink-500 to-blue-500 text-white px-5 py-2 rounded-full font-medium shadow-lg hover:opacity-90 transition-opacity duration-300"
-          >
+          <MagneticButton href="#contact" className="!px-5 !py-2 !text-base">
             Reach Out
-          </a>
+          </MagneticButton>
         </div>
       </nav>
 
-      <OverlayMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+      <OverlayMenu isOpen={menuOpen} onClose={closeMenu} active={active} />
     </>
   );
 }

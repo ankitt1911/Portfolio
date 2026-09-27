@@ -1,5 +1,83 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
+@theme {
+  --color-brand-cyan: #1cd8d2;
+  --color-brand-green: #00bf8f;
+  --color-brand-indigo: #302b63;
+
+  --font-bangers: "Bangers", cursive;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
+  --animate-blink: blink 1s steps(2, start) infinite;
+  --animate-orbit: orbit 28s linear infinite;
+  --animate-orbit-reverse: orbit 28s linear infinite reverse;
+  --animate-aurora: aurora 18s ease-in-out infinite alternate;
+  --animate-equalizer: equalizer 0.9s ease-in-out infinite;
+  --animate-spin-slow: spin 6s linear infinite;
+  --animate-scroll-dot: scroll-dot 1.8s ease-in-out infinite;
+  --animate-shine: shine 2.8s ease-in-out infinite;
+
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
+  @keyframes blink {
+    to { visibility: hidden; }
+  }
+  @keyframes orbit {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes aurora {
+    0% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(8%, -6%, 0) scale(1.15); }
+    100% { transform: translate3d(-6%, 8%, 0) scale(0.95); }
+  }
+  @keyframes equalizer {
+    0%, 100% { transform: scaleY(0.3); }
+    50% { transform: scaleY(1); }
+  }
+  @keyframes scroll-dot {
+    0% { transform: translateY(0); opacity: 1; }
+    80% { transform: translateY(14px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 0; }
+  }
+  @keyframes shine {
+    0% { transform: translateX(-120%) skewX(-20deg); }
+    60%, 100% { transform: translateX(220%) skewX(-20deg); }
+  }
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(90deg, #1cd8d2, #00bf8f, #302b63);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility text-gradient-animated {
+  background-image: linear-gradient(90deg, #1cd8d2, #00bf8f, #6d63ff, #1cd8d2);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientShift 6s linear infinite;
+}
+
+@utility bg-grid {
+  background-image:
+    linear-gradient(rgba(28, 216, 210, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(28, 216, 210, 0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
 
 @keyframes gradientBG {
   0% { background-position: 0% 50%; }
@@ -12,31 +90,19 @@
   animation: gradientBG 10s ease infinite;
 }
 
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 @layer utilities {
   .animated-gradient {
-    background: linear-gradient(-45deg, #302b63, #00bf8f, #1CD8D2);
+    background: linear-gradient(-45deg, #302b63, #00bf8f, #1cd8d2);
     background-size: 400% 400%;
     animation: gradientShift 12s ease infinite;
   }
-
-  @keyframes gradientShift {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
 }
-
-/* Delay utilities for staggered animations */
-.delay-200 { transition-delay: 200ms; }
-.delay-300 { transition-delay: 300ms; }
-.delay-400 { transition-delay: 400ms; }
-
 
 @keyframes fadeInUp {
   0% { opacity: 0; transform: translateY(20px) scale(0.95); }
@@ -58,29 +124,81 @@
   animation: floating 4s ease-in-out infinite;
 }
 
+@layer base {
+  /* framer-motion measures scroll targets relative to <html> */
+  html {
+    position: relative;
+  }
 
+  ::selection {
+    background: rgba(28, 216, 210, 0.35);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid #1cd8d2;
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  /* Spotlight card: border glow follows the pointer via --mx / --my */
+  .spotlight-card {
+    --mx: 50%;
+    --my: 50%;
+    --glow: 28, 216, 210;
+    position: relative;
+    isolation: isolate;
+  }
+  .spotlight-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background:
+      radial-gradient(320px circle at var(--mx) var(--my), rgba(var(--glow), 0.7), transparent 60%),
+      linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .spotlight-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(420px circle at var(--mx) var(--my), rgba(var(--glow), 0.09), transparent 55%);
+    opacity: 0;
+    transition: opacity 300ms ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .spotlight-card:hover::after {
+    opacity: 1;
+  }
+}
+
+/* Syntax colours for code snippets */
+.tok-key { color: #c792ea; }
+.tok-var { color: #82aaff; }
+.tok-prop { color: #1cd8d2; }
+.tok-str { color: #c3e88d; }
+.tok-num { color: #f78c6c; }
+.tok-com { color: #5c6773; font-style: italic; }
+.tok-pun { color: #89ddff; }
 
 /* react-pageflip internal elements */
-.certification-book .stf__parent {
-  background: transparent !important;
-}
-
-.certification-book .stf__wrapper {
-  background: transparent !important;
-}
-
+.certification-book .stf__parent,
+.certification-book .stf__wrapper,
 .certification-book .stf__block {
   background: transparent !important;
 }
 
-.certification-book .stf__item {
-  background-color: #ffffff !important;
-}
-
-.certification-book .stf__page {
-  background-color: #ffffff !important;
-}
-
+.certification-book .stf__item,
+.certification-book .stf__page,
 .certification-book .stf__page > div {
   background-color: #ffffff !important;
 }
@@ -88,5 +206,16 @@
 @media (max-width: 640px) {
   body > *:not(#contact):not(footer) {
     overflow-x: clip;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

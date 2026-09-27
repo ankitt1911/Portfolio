@@ -1,111 +1,102 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import SectionHeading from "../components/ui/SectionHeading";
+import { experiences } from "../data/experience";
+import useIsMobile from "../hooks/useIsMobile";
 
-const experiences = [
-{
-  role: "Software Engineer Intern",
-  company: "SNV SecureGen",
-  duration: "Jan 2025 - Jun 2025",
-  location: "Bengaluru, Karnataka, India · Remote",
-  description:
-    "Built responsive MERN stack applications and worked with REST APIs while gaining experience in performance optimization and collaborative development.",
-},
-{
-  role: "Software Engineer Intern",
-  company: "JoulestoWatts Business Solutions Pvt Ltd",
-  duration: "Sep 2025 - Dec 2025",
-  location: "Bengaluru, Karnataka, India · On-site",
-  description:
-    "Contributed to full-stack development using React, Node.js, and Express while building scalable features and improving application performance.",
-},
-{
-  role: "Software Development Engineer (SDE)",
-  company: "JoulestoWatts Business Solutions Pvt Ltd",
-  duration: "Dec 2025 - Present",
-  location: "Bengaluru, Karnataka, India · On-site",
-  description:
-    "Designing and developing scalable full-stack applications using the MERN stack with a focus on performance, reliability, and clean architecture.",
+function ExperienceCard({ exp, className, style, borderColor, shadow }) {
+  return (
+    <motion.article
+      className={`bg-black/70 backdrop-blur-md border rounded-xl p-3 md:p-4 ${className}`}
+      style={{ ...style, borderColor, boxShadow: shadow }}
+    >
+      <p className="font-mono text-[10px] text-white/40 mb-2 truncate">
+        <span className="text-[#febc2e]">commit {exp.commit}</span> · {exp.message}
+      </p>
+      <span className="inline-block px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase rounded-full bg-brand-cyan/10 text-brand-cyan mb-2">
+        {exp.duration}
+      </span>
+      <h3 className="text-sm md:text-base font-bold text-white mb-0.5 break-words">{exp.role}</h3>
+      <p className="text-xs text-brand-cyan/70 mb-1 break-words">{exp.company}</p>
+      {exp.location && (
+        <span className="hidden md:inline-block text-[10px] font-medium px-2 py-0.5 rounded bg-brand-green/15 text-brand-green mb-2 break-words">
+          {exp.location}
+        </span>
+      )}
+      <p className="text-[11px] md:text-xs text-white/70 leading-relaxed break-words">{exp.description}</p>
+    </motion.article>
+  );
 }
-];
 
 function ExperienceItem({ exp, idx, start, end, scrollYProgress, layout }) {
   const markerScale = useTransform(scrollYProgress, [start, end], [0, 1]);
-  const markerOpacity = useTransform(scrollYProgress, [start, end], [0, 1]);
   const cardOpacity = useTransform(scrollYProgress, [start, end], [0, 1]);
 
   const isAbove = idx % 2 === 0;
   const cardY = useTransform(scrollYProgress, [start, end], [isAbove ? 30 : -30, 0]);
   const cardX = useTransform(scrollYProgress, [start, end], [-24, 0]);
 
+  // Card lights up once the progress line reaches it
+  const borderColor = useTransform(scrollYProgress, [end - 0.05, end], ["rgba(28,216,210,0.2)", "rgba(28,216,210,0.7)"]);
+  const shadow = useTransform(
+    scrollYProgress,
+    [end - 0.05, end],
+    ["0 0 0px rgba(28,216,210,0)", "0 0 30px rgba(28,216,210,0.25)"]
+  );
+
   if (layout === "desktop") {
     return (
-      <div className="relative flex-1 flex justify-center items-center min-w-0" key={`${exp.company}-${exp.role}-${idx}`}>
-        {/* Marker dot */}
+      <div className="relative flex-1 flex justify-center items-center min-w-0">
         <motion.div
-          className="z-10 w-5 h-5 rounded-full bg-[#1cd8d2] ring-[3px] ring-[#1cd8d2]/30 shadow-[0_0_10px_rgba(28,216,210,0.4)]"
-          style={{ scale: markerScale, opacity: markerOpacity }}
+          className="z-10 w-5 h-5 rounded-full bg-brand-cyan ring-[3px] ring-brand-cyan/30 shadow-[0_0_14px_rgba(28,216,210,0.6)]"
+          style={{ scale: markerScale, opacity: markerScale }}
         />
-        {/* Connector line */}
         <motion.div
-          className={`absolute ${isAbove ? "-top-6" : "-bottom-6"} w-[2px]`}
-          style={{ height: 32, opacity: cardOpacity, background: "rgba(28,216,210,0.3)" }}
+          className={`absolute ${isAbove ? "-top-6" : "-bottom-6"} w-[2px] bg-gradient-to-b from-brand-cyan/60 to-brand-cyan/10`}
+          style={{ height: 32, opacity: cardOpacity }}
         />
-        {/* Card */}
-        <motion.article
-          className={`absolute ${isAbove ? "bottom-10" : "top-10"} bg-white/5 backdrop-blur-sm border border-[#1cd8d2]/30 rounded-xl p-4 w-[280px] shadow-[0_0_15px_rgba(28,216,210,0.08)] hover:shadow-[0_0_25px_rgba(28,216,210,0.15)] transition-shadow duration-500`}
-          style={{ opacity: cardOpacity, y: cardY, maxWidth: "90vw" }}
-          transition={{ duration: 0.4, delay: idx * 0.15 }}
-        >
-          <span className="inline-block px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase rounded-full bg-[#1cd8d2]/10 text-[#1cd8d2] mb-2">
-            {exp.duration}
-          </span>
-          <h3 className="text-base font-bold text-white mb-0.5">{exp.role}</h3>
-          <p className="text-xs text-[#1cd8d2]/60 mb-1">{exp.company}</p>
-          {exp.location && (
-            <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-[#00bf8f]/15 text-[#00bf8f] inline-block mb-2">{exp.location}</span>
-          )}
-          <p className="text-xs text-white/70 leading-relaxed break-words">{exp.description}</p>
-        </motion.article>
+        <ExperienceCard
+          exp={exp}
+          className={`absolute ${isAbove ? "bottom-10" : "top-10"} w-[290px] max-w-[90vw]`}
+          style={{ opacity: cardOpacity, y: cardY }}
+          borderColor={borderColor}
+          shadow={shadow}
+        />
       </div>
     );
   }
 
-  // Mobile layout
   return (
-    <div key={`${exp.company}-${exp.role}-m-${idx}`} className="relative flex items-start">
+    <div className="relative flex items-start">
       <motion.div
-        className="absolute -left-[9px] top-4 z-10 w-4 h-4 rounded-full bg-[#1cd8d2] ring-[3px] ring-[#1cd8d2]/30 shadow-[0_0_10px_rgba(28,216,210,0.4)]"
-        style={{ scale: markerScale, opacity: markerOpacity }}
+        className="absolute -left-[30px] top-4 z-10 w-4 h-4 rounded-full bg-brand-cyan ring-[3px] ring-brand-cyan/30 shadow-[0_0_10px_rgba(28,216,210,0.5)]"
+        style={{ scale: markerScale, opacity: markerScale }}
       />
-      <motion.article
-        className="ml-6 bg-white/5 backdrop-blur-sm border border-[#1cd8d2]/30 rounded-xl p-3 w-full max-w-xs shadow-[0_0_15px_rgba(28,216,210,0.08)]"
+      <ExperienceCard
+        exp={exp}
+        className="w-full max-w-xs"
         style={{ opacity: cardOpacity, x: cardX }}
-        transition={{ duration: 0.4, delay: idx * 0.15 }}
-      >
-        <span className="inline-block px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase rounded-full bg-[#1cd8d2]/10 text-[#1cd8d2] mb-2">
-          {exp.duration}
-        </span>
-        <h3 className="text-sm font-bold text-white mb-0.5 break-words">{exp.role}</h3>
-        <p className="text-xs text-[#1cd8d2]/60 mb-1 break-words">{exp.company}</p>
-        {exp.location && (
-          <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-[#00bf8f]/15 text-[#00bf8f] inline-block mb-2 break-words">{exp.location}</span>
-        )}
-        <p className="text-xs text-white/70 leading-relaxed break-words">{exp.description}</p>
-      </motion.article>
+        borderColor={borderColor}
+        shadow={shadow}
+      />
     </div>
+  );
+}
+
+function Comet({ style }) {
+  return (
+    <motion.div className="absolute z-20 pointer-events-none" style={style} aria-hidden="true">
+      <div className="-ml-2 -mt-2 relative h-4 w-4">
+        <span className="absolute inset-0 rounded-full bg-brand-cyan animate-ping opacity-60" />
+        <span className="absolute inset-[3px] rounded-full bg-white shadow-[0_0_16px_4px_rgba(28,216,210,0.9)]" />
+      </div>
+    </motion.div>
   );
 }
 
 const Experience = () => {
   const sceneRef = React.useRef(null);
-  const [isMobile, setIsMobile] = React.useState(false);
-
-  React.useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  const isMobile = useIsMobile();
 
   const SCENE_HEIGHT_VH = isMobile ? 100 * experiences.length * 2 : 100 * experiences.length * 1.2;
 
@@ -117,115 +108,82 @@ const Experience = () => {
     [numExperiences]
   );
 
-  const lineWidth = useTransform(scrollYProgress, (v) => `${v * 100}%`);
-  const lineHeight = useTransform(scrollYProgress, (v) => `${v * 100}%`);
+  const lineSize = useTransform(scrollYProgress, (v) => `${v * 100}%`);
 
   const lineGlow = useTransform(
     scrollYProgress,
     [0, 0.5, 1],
-    [
-      "0 0 8px rgba(28,216,210,0.15)",
-      "0 0 20px rgba(0,191,143,0.4)",
-      "0 0 30px rgba(28,216,210,0.5)",
-    ]
+    ["0 0 8px rgba(28,216,210,0.15)", "0 0 20px rgba(0,191,143,0.4)", "0 0 30px rgba(28,216,210,0.5)"]
   );
 
   return (
     <section id="experience" className="relative bg-black text-white">
       <div ref={sceneRef} style={{ height: `${SCENE_HEIGHT_VH}vh`, minHeight: "120vh" }} className="relative">
-        <div className="sticky top-0 h-screen flex flex-col">
-          {/* Background ambient glow */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-1/4 left-0 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#302b63] via-[#00bf8f] to-[#1cd8d2] opacity-20 blur-[120px] animate-pulse" />
-            <div className="absolute bottom-1/4 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#302b63] via-[#00bf8f] to-[#1cd8d2] opacity-20 blur-[120px] animate-pulse delay-500" />
+        <div className="sticky top-0 h-screen flex flex-col overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+            <div className="absolute inset-0 bg-grid opacity-40" />
+            <div className="absolute top-1/4 left-0 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-brand-indigo via-brand-green to-brand-cyan opacity-20 blur-[120px] animate-aurora" />
+            <div className="absolute bottom-1/4 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-brand-indigo via-brand-green to-brand-cyan opacity-20 blur-[120px] animate-aurora [animation-delay:-6s]" />
           </div>
 
-          {/* Title */}
-          <div className="shrink-0 px-6 pt-4 md:pt-6 text-center z-10">
-            <motion.h2
-              className="text-3xl sm:text-4xl font-bold mt-3 bg-gradient-to-r from-[#1cd8d2] via-[#00bf8f] to-[#302b63] bg-clip-text text-transparent"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              Experience
-            </motion.h2>
-            <motion.p
-              className="text-white/90 mt-2 text-xs sm:text-sm max-w-md mx-auto"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              My professional journey building real-world applications
-            </motion.p>
+          <div className="shrink-0 px-6 pt-14 md:pt-16">
+            <SectionHeading compact index="04" eyebrow="experience · git log" title="Experience" subtitle="My professional journey building real-world applications" />
           </div>
 
-          {/* Timeline container */}
-          <div className="flex-1 flex items-center justify-center px-4 md:px-6 pb-4 md:pb-6 z-10 min-h-0 overflow-y-auto">
+          <div className="flex-1 flex items-start md:items-center justify-center px-4 md:px-6 pt-4 md:pt-0 pb-4 md:pb-6 z-10 min-h-0">
             {/* Desktop Timeline */}
             <div className="relative w-full max-w-7xl hidden md:block">
-              {/* Horizontal timeline line */}
               <div className="relative h-[3px] bg-white/10 rounded-full">
                 <motion.div
-                  className="absolute left-0 top-0 h-[3px] rounded-full origin-left"
+                  className="absolute left-0 top-0 h-[3px] rounded-full"
                   style={{
-                    width: lineWidth,
+                    width: lineSize,
                     background: "linear-gradient(to right, #1cd8d2, #00bf8f, #302b63)",
                     boxShadow: lineGlow,
                   }}
                 />
+                <Comet style={{ left: lineSize, top: 1.5 }} />
               </div>
-              {/* Experience items */}
               <div className="relative flex justify-between mt-0">
-                {experiences.map((exp, idx) => {
-                  const start = idx === 0 ? 0 : thresholds[idx - 1];
-                  const end = thresholds[idx];
-                  return (
-                    <ExperienceItem
-                      key={`${exp.company}-${exp.role}-${idx}`}
-                      exp={exp}
-                      idx={idx}
-                      start={start}
-                      end={end}
-                      scrollYProgress={scrollYProgress}
-                      layout="desktop"
-                    />
-                  );
-                })}
+                {experiences.map((exp, idx) => (
+                  <ExperienceItem
+                    key={`${exp.company}-${exp.role}-${idx}`}
+                    exp={exp}
+                    idx={idx}
+                    start={idx === 0 ? 0 : thresholds[idx - 1]}
+                    end={thresholds[idx]}
+                    scrollYProgress={scrollYProgress}
+                    layout="desktop"
+                  />
+                ))}
               </div>
             </div>
+
             {/* Mobile Timeline */}
             <div className="relative w-full max-w-md md:hidden">
-              {/* Vertical timeline line */}
               <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-white/10 rounded-full">
                 <motion.div
-                  className="absolute top-0 left-0 w-[3px] rounded-full origin-top"
+                  className="absolute top-0 left-0 w-[3px] rounded-full"
                   style={{
-                    height: lineHeight,
+                    height: lineSize,
                     background: "linear-gradient(to bottom, #1cd8d2, #00bf8f, #302b63)",
                     boxShadow: lineGlow,
                   }}
                 />
+                <Comet style={{ top: lineSize, left: 1.5 }} />
               </div>
-              {/* Experience items */}
-              <div className="relative flex flex-col gap-4 ml-6 mt-4 pb-4">
-                {experiences.map((exp, idx) => {
-                  const start = idx === 0 ? 0 : thresholds[idx - 1];
-                  const end = thresholds[idx];
-                  return (
-                    <ExperienceItem
-                      key={`${exp.company}-${exp.role}-m-${idx}`}
-                      exp={exp}
-                      idx={idx}
-                      start={start}
-                      end={end}
-                      scrollYProgress={scrollYProgress}
-                      layout="mobile"
-                    />
-                  );
-                })}
+              <div className="relative flex flex-col gap-3 ml-6 py-2">
+                {experiences.map((exp, idx) => (
+                  <ExperienceItem
+                    key={`${exp.company}-${exp.role}-m-${idx}`}
+                    exp={exp}
+                    idx={idx}
+                    start={idx === 0 ? 0 : thresholds[idx - 1]}
+                    end={thresholds[idx]}
+                    scrollYProgress={scrollYProgress}
+                    layout="mobile"
+                  />
+                ))}
               </div>
             </div>
           </div>

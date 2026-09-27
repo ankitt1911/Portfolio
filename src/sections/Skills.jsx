@@ -1,141 +1,108 @@
-import { FaReact, FaHtml5, FaCss3Alt, FaBootstrap, FaGitAlt, FaGithub, FaNpm, FaNode } from 'react-icons/fa';
-import { SiNextdotjs, SiTailwindcss, SiExpress, SiFirebase, SiJavascript, SiMongodb, SiMysql, SiPostgresql, SiNodedotjs, SiMui, SiAxios, SiFramer, SiJsonwebtokens, SiTypescript, SiRedux, SiPostman, SiShadcnui, SiSocketdotio, SiVercel } from 'react-icons/si';
-import { MdEmail, MdSchedule } from 'react-icons/md';
-import { FcDataEncryption } from "react-icons/fc";
-import { VscJson } from 'react-icons/vsc';
-import { AiOutlineCloudServer } from 'react-icons/ai';
-import { BsFileEarmarkArrowUp } from 'react-icons/bs';
-import { motion } from 'framer-motion';
+import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import SectionHeading from "../components/ui/SectionHeading";
+import SpotlightCard from "../components/ui/SpotlightCard";
+import Marquee from "../components/ui/Marquee";
+import { allSkills, skillCategories } from "../data/skills";
 
+const tabs = [{ key: "all", title: "All" }, ...skillCategories.map(({ key, title }) => ({ key, title }))];
+
+const half = Math.ceil(allSkills.length / 2);
+const marqueeRows = [allSkills.slice(0, half), allSkills.slice(half)];
+
+function MarqueeChip({ skill }) {
+  const Icon = skill.icon;
+  return (
+    <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 font-mono text-sm text-white/70 whitespace-nowrap">
+      <Icon className="text-brand-cyan text-lg" />
+      {skill.name}
+    </div>
+  );
+}
 
 export default function Skills() {
+  const [active, setActive] = useState("all");
 
-const categories = [
-  {
-    title: "Frontend",
-    skills: [
-      { icon: <FaReact />, name: "React" },
-      { icon: <SiNextdotjs />, name: "Next.js" },
-      { icon: <FaHtml5 />, name: "HTML" },
-      { icon: <FaCss3Alt />, name: "CSS" },
-      { icon: <SiTailwindcss />, name: "Tailwind CSS" },
-      { icon: <FaBootstrap />, name: "Bootstrap" },
-      { icon: <SiMui />, name: "Material UI" },
-      { icon: <SiTailwindcss />, name: "Material Tailwind" },
-      { icon: <SiShadcnui />, name: "Shadcn UI" },
-      { icon: <SiFramer />, name: "Framer Motion" },
-      { icon: <SiFramer />, name: "GSAP" },
-      { icon: <SiRedux />, name: "Redux Toolkit" },
-      { icon: <SiAxios />, name: "Axios" },
-      { icon: <SiJavascript />, name: "JavaScript" },
-      { icon: <SiTypescript />, name: "TypeScript" },
-      { icon: <SiNodedotjs />, name: "Toastify" },
-    ],
-  },
-  {
-    title: "Backend",
-    skills: [
-      { icon: <FaNode />, name: "Node.js" },
-      { icon: <SiExpress />, name: "Express" },
-      { icon: <SiJsonwebtokens />, name: "JWT" },
-      { icon: <SiJsonwebtokens />, name: "JOI" },
-      { icon: <MdEmail />, name: "Nodemailer" },
-      { icon: <SiSocketdotio />, name: "Socket.io" },
-      { icon: <AiOutlineCloudServer />, name: "CORS" },
-      { icon: <VscJson />, name: "Morgan" },
-      { icon: <BsFileEarmarkArrowUp />, name: "Multer" },
-      { icon: <MdSchedule />, name: "Node Cron" },
-      { icon: <AiOutlineCloudServer />, name: "REST API" },
-      { icon: <FcDataEncryption />, name: "Bcrypt" },
-    ],
-  },
-  {
-    title: "Databases",
-    skills: [
-      { icon: <SiMongodb />, name: "MongoDB" },
-      { icon: <SiMysql />, name: "MySQL" },
-      { icon: <SiPostgresql />, name: "PostgreSQL" },
-      { icon: <SiFirebase />, name: "Firebase" },
-    ],
-  },
-  {
-    title: "Tools",
-    skills: [
-      { icon: <FaGitAlt />, name: "Git" },
-      { icon: <FaGithub />, name: "GitHub" },
-      { icon: <FaNpm />, name: "NPM" },
-      { icon: <SiPostman />, name: "Postman" },
-      { icon: <SiVercel />, name: "Vercel" },
-    ],
-  },
-];
+  const visible = useMemo(
+    () => (active === "all" ? allSkills : allSkills.filter((s) => s.category === active)),
+    [active]
+  );
 
-  return(
-    <section id="skills"
-    className="w-full pb-8 flex flex-col items-center justify-center relative bg-black text-white overflow-hidden">
-      <div className='absolute inset-0 pointer-events-none'>
-<div className='absolute top-1/4 left-0 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#302b63] via-[#00bf8f] to-[#1cd8d2]
-opacity-20 blur-[120px] animate-pulse
-'/>
-<div className='absolute bottom-1/4 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-[#302b63] via-[#00bf8f] to-[#1cd8d2]
-opacity-20 blur-[120px] animate-pulse delay-500
-' />
-
+  return (
+    <section id="skills" className="w-full py-24 flex flex-col items-center relative bg-black text-white overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute top-1/4 left-0 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-brand-indigo via-brand-green to-brand-cyan opacity-20 blur-[120px] animate-aurora" />
+        <div className="absolute bottom-1/4 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-brand-indigo via-brand-green to-brand-cyan opacity-20 blur-[120px] animate-aurora [animation-delay:-8s]" />
       </div>
 
-      <motion.h2 className='text-4xl mt-5 sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#1cd8d2] via-[#00bf8f] to-[#302b63] z-10'
-      initial={{opacity:0 , y: -30}}
-      whileInView={{opacity:1 , y:0}}
-      transition={{duration:0.5 , delay:0.1 }}
-      >
-        My Skills
-      </motion.h2>
-      <motion.p className='mt-2 mb-8 text-white/90 text-base sm:text-lg z-10'
-      initial={{opacity:0 , y: -10}}
-      whileInView={{opacity:1 , y:0}}
-      transition={{duration:0.5 , delay:0.1 }}
+      <SectionHeading
+        index="02"
+        eyebrow="skills"
+        title="My Tech Stack"
+        subtitle="Modern applications, modern technologies — from pixel to database."
+        className="px-6"
+      />
 
-      >
-Modern Applications | Modern Technologies
-      </motion.p>
-
-<div className='w-full max-w-5xl px-8 z-10 flex flex-col gap-10'>
-  {categories.map((cat, ci) => (
-    <motion.div
-      key={cat.title}
-      initial={{opacity:0 , y: 30}}
-      whileInView={{opacity:1 , y: 0}}
-      transition={{duration:0.4 , delay: ci * 0.1}}
-      className='rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6'
-    >
-      <h3 className='text-xl font-semibold mb-5 text-[#1cd8d2] tracking-wide'>
-        {cat.title}
-      </h3>
-      <div className='grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 gap-6 justify-items-center text-4xl sm:text-5xl text-[#1cd8d2]'>
-        {cat.skills.map((s, i) => (
-          <motion.div
-            key={i}
-            className='flex flex-col items-center gap-2'
-            aria-label={s.name}
-            title={s.name}
-            initial={{opacity:0 , scale: 0.8}}
-            whileInView={{opacity:1 , scale: 1}}
-            transition={{duration:0.3 , delay: i * 0.03}}
-          >
-            <span className='hover:scale-125 transition-transform duration-300'>
-              {s.icon}
-            </span>
-            <p className='text-xs sm:text-sm text-white/80 text-center'>
-              {s.name}
-            </p>
-          </motion.div>
-        ))}
+      {/* Marquees */}
+      <div className="relative z-10 w-full mt-12 flex flex-col gap-4">
+        <Marquee items={marqueeRows[0]} duration={45} renderItem={(s) => <MarqueeChip skill={s} />} />
+        <Marquee items={marqueeRows[1]} duration={50} reverse renderItem={(s) => <MarqueeChip skill={s} />} />
       </div>
-    </motion.div>
-  ))}
-</div>
 
+      {/* Tabs */}
+      <div className="relative z-10 w-full max-w-5xl px-4 sm:px-8 mt-14">
+        <div role="tablist" aria-label="Skill categories" className="flex gap-2 overflow-x-auto no-scrollbar justify-start sm:justify-center pb-2">
+          {tabs.map((t) => {
+            const selected = active === t.key;
+            return (
+              <button
+                key={t.key}
+                role="tab"
+                aria-selected={selected}
+                onClick={() => setActive(t.key)}
+                className={`relative shrink-0 rounded-full px-5 py-2 font-mono text-sm transition-colors ${
+                  selected ? "text-black" : "text-white/70 hover:text-white"
+                }`}
+              >
+                {selected && (
+                  <motion.span
+                    layoutId="skill-tab"
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-brand-cyan to-brand-green shadow-[0_0_20px_rgba(28,216,210,0.5)]"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{t.title}</span>
+              </button>
+            );
+          })}
+        </div>
 
+        {/* Grid */}
+        <motion.div layout className="mt-8 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 sm:gap-4">
+          <AnimatePresence mode="popLayout">
+            {visible.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <motion.div
+                  key={`${s.category}-${s.name}`}
+                  layout
+                  initial={{ opacity: 0, scale: 0.6, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.6 }}
+                  transition={{ duration: 0.35, delay: Math.min(i * 0.02, 0.4) }}
+                >
+                  <SpotlightCard className="group rounded-2xl bg-white/[0.03] h-full" title={s.name}>
+                    <div className="flex flex-col items-center justify-center gap-2 px-2 py-5">
+                      <Icon className="text-4xl sm:text-5xl text-brand-cyan transition-all duration-300 group-hover:scale-125 group-hover:-translate-y-1 group-hover:drop-shadow-[0_0_14px_rgba(28,216,210,0.8)]" />
+                      <p className="text-[11px] sm:text-sm text-white/80 text-center leading-tight">{s.name}</p>
+                    </div>
+                  </SpotlightCard>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
+      </div>
     </section>
-  )
+  );
 }

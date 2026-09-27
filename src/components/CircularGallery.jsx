@@ -198,7 +198,7 @@ class App {
       bend,
       textColor = '#ffffff',
       borderRadius = 0,
-      font = 'bold 30px Figtree',
+      font = 'bold 30px "JetBrains Mono"',
       scrollSpeed = 2,
       scrollEase = 0.05
     } = {}
@@ -215,6 +215,7 @@ class App {
     this.createGeometry();
     this.createMedias(items, bend, textColor, borderRadius, font);
     this.autoScrollSpeed = scrollSpeed * 0.01;
+    this.boundUpdate = this.update.bind(this);
     this.update();
     this.addEventListeners();
   }
@@ -328,7 +329,15 @@ class App {
     }
     this.renderer.render({ scene: this.scene, camera: this.camera });
     this.scroll.last = this.scroll.current;
-    this.raf = window.requestAnimationFrame(this.update.bind(this));
+    this.raf = window.requestAnimationFrame(this.boundUpdate);
+  }
+  pause() {
+    window.cancelAnimationFrame(this.raf);
+    this.raf = null;
+  }
+  resume() {
+    if (this.raf) return;
+    this.raf = window.requestAnimationFrame(this.boundUpdate);
   }
   addEventListeners() {
     this.boundOnResize = this.onResize.bind(this);
@@ -336,25 +345,25 @@ class App {
     this.boundOnTouchDown = this.onTouchDown.bind(this);
     this.boundOnTouchMove = this.onTouchMove.bind(this);
     this.boundOnTouchUp = this.onTouchUp.bind(this);
+    // Wheel and drag start only count over the gallery itself; move/up stay on
+    // window so a drag that leaves the gallery still ends cleanly.
     window.addEventListener('resize', this.boundOnResize);
-    window.addEventListener('mousewheel', this.boundOnWheel);
-    window.addEventListener('wheel', this.boundOnWheel);
-    window.addEventListener('mousedown', this.boundOnTouchDown);
+    this.container.addEventListener('wheel', this.boundOnWheel, { passive: true });
+    this.container.addEventListener('mousedown', this.boundOnTouchDown);
+    this.container.addEventListener('touchstart', this.boundOnTouchDown, { passive: true });
     window.addEventListener('mousemove', this.boundOnTouchMove);
     window.addEventListener('mouseup', this.boundOnTouchUp);
-    window.addEventListener('touchstart', this.boundOnTouchDown);
-    window.addEventListener('touchmove', this.boundOnTouchMove);
+    window.addEventListener('touchmove', this.boundOnTouchMove, { passive: true });
     window.addEventListener('touchend', this.boundOnTouchUp);
   }
   destroy() {
     window.cancelAnimationFrame(this.raf);
     window.removeEventListener('resize', this.boundOnResize);
-    window.removeEventListener('mousewheel', this.boundOnWheel);
-    window.removeEventListener('wheel', this.boundOnWheel);
-    window.removeEventListener('mousedown', this.boundOnTouchDown);
+    this.container.removeEventListener('wheel', this.boundOnWheel);
+    this.container.removeEventListener('mousedown', this.boundOnTouchDown);
+    this.container.removeEventListener('touchstart', this.boundOnTouchDown);
     window.removeEventListener('mousemove', this.boundOnTouchMove);
     window.removeEventListener('mouseup', this.boundOnTouchUp);
-    window.removeEventListener('touchstart', this.boundOnTouchDown);
     window.removeEventListener('touchmove', this.boundOnTouchMove);
     window.removeEventListener('touchend', this.boundOnTouchUp);
     if (this.renderer && this.renderer.gl && this.renderer.gl.canvas.parentNode) {
@@ -368,16 +377,30 @@ export default function CircularGallery({
   bend = 2,
   textColor = '#ffffff',
   borderRadius = 0.05,
-  font = 'bold 30px Figtree',
+  font = 'bold 30px "JetBrains Mono"',
   scrollSpeed = 1,
   scrollEase = 0.01
 }) {
   const containerRef = useRef(null);
   useEffect(() => {
-    const app = new App(containerRef.current, { items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase });
+    const container = containerRef.current;
+    const app = new App(container, { items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase });
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) app.resume();
+      else app.pause();
+    });
+    observer.observe(container);
     return () => {
+      observer.disconnect();
       app.destroy();
     };
   }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase]);
-  return <div className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing " ref={containerRef} />;
+  return (
+    <div
+      className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
+      ref={containerRef}
+      data-cursor
+      data-cursor-label="drag"
+    />
+  );
 }

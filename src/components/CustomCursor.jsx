@@ -1,45 +1,85 @@
-// Importing React hooks
 import { useEffect, useState } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import useFinePointer from "../hooks/useFinePointer";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
+
+const INTERACTIVE = "a, button, [role='button'], input, textarea, select, label, [data-cursor]";
 
 export default function CustomCursor() {
-  // Store mouse position (x, y) in local state
-  // By default, it starts at { x: 0, y: 0 }
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const fine = useFinePointer();
+  const reduced = usePrefersReducedMotion();
+  const enabled = fine && !reduced;
 
-  // useEffect runs once when component mounts
+  const x = useMotionValue(-100);
+  const y = useMotionValue(-100);
+  const ringX = useSpring(x, { stiffness: 500, damping: 40, mass: 0.4 });
+  const ringY = useSpring(y, { stiffness: 500, damping: 40, mass: 0.4 });
+  const glowX = useSpring(x, { stiffness: 80, damping: 20 });
+  const glowY = useSpring(y, { stiffness: 80, damping: 20 });
+
+  const [hovering, setHovering] = useState(false);
+  const [label, setLabel] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [pressed, setPressed] = useState(false);
+
   useEffect(() => {
-    // Function to update cursor position whenever mouse moves
-    const moveHandler = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+    if (!enabled) return;
+
+    const move = (e) => {
+      x.set(e.clientX);
+      y.set(e.clientY);
+      setVisible(true);
     };
+    const over = (e) => {
+      const target = e.target.closest?.(INTERACTIVE);
+      setHovering(Boolean(target));
+      setLabel(target?.getAttribute("data-cursor-label") || "");
+    };
+    const leave = (e) => {
+      if (!e.relatedTarget) setVisible(false);
+    };
+    const down = () => setPressed(true);
+    const up = () => setPressed(false);
 
-    // Add event listener for mouse movement
-    window.addEventListener("mousemove", moveHandler);
+    window.addEventListener("pointermove", move, { passive: true });
+    document.addEventListener("pointerover", over, { passive: true });
+    document.addEventListener("pointerout", leave, { passive: true });
+    window.addEventListener("pointerdown", down);
+    window.addEventListener("pointerup", up);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      document.removeEventListener("pointerover", over);
+      document.removeEventListener("pointerout", leave);
+      window.removeEventListener("pointerdown", down);
+      window.removeEventListener("pointerup", up);
+    };
+  }, [enabled, x, y]);
 
-    // Cleanup → remove event listener when component unmounts
-    return () => window.removeEventListener("mousemove", moveHandler);
-  }, []);
+  if (!enabled) return null;
+
+  const ringScale = pressed ? 0.8 : label ? 2.6 : hovering ? 1.8 : 1;
 
   return (
-    <div
-      // pointer-events-none → ensures this custom cursor does NOT block clicks
-      // fixed + top-0 + left-0 → always pinned to top-left
-      // z-[9999] → ensures it stays above everything
-      className="pointer-events-none fixed top-0 left-0 z-[9999]"
-      style={{
-        // Move the div to match current mouse position
-        // -40px centers the cursor since the circle size = 80px (20rem/2)
-        transform: `translate(${position.x - 40}px, ${position.y - 40}px)`,
-
-        // Adds smooth movement animation for cursor trail
-        transition: "transform 0.05s linear",
-      }}
-    >
-      {/* The glowing circle */}
-      <div
-        className="w-20 h-20 rounded-full 
-                   bg-gradient-to-r from-pink-500 to-blue-500 
-                   blur-3xl opacity-80"
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[9998]" style={{ opacity: visible ? 1 : 0 }}>
+      {/* Soft trailing glow */}
+      <motion.div
+        className="absolute left-0 top-0 h-40 w-40 -ml-20 -mt-20 rounded-full bg-gradient-to-r from-brand-cyan/40 to-brand-indigo/40 blur-3xl"
+        style={{ x: glowX, y: glowY }}
+      />
+      {/* Ring */}
+      <motion.div className="absolute left-0 top-0" style={{ x: ringX, y: ringY }}>
+        <motion.div
+          className="-ml-4 -mt-4 flex h-8 w-8 items-center justify-center rounded-full border border-brand-cyan/70 mix-blend-difference"
+          animate={{ scale: ringScale, backgroundColor: hovering ? "rgba(28,216,210,0.15)" : "rgba(28,216,210,0)" }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        >
+          {label && <span className="font-mono text-[5px] uppercase tracking-widest text-white">{label}</span>}
+        </motion.div>
+      </motion.div>
+      {/* Dot */}
+      <motion.div
+        className="absolute left-0 top-0 -ml-[3px] -mt-[3px] h-1.5 w-1.5 rounded-full bg-brand-cyan shadow-[0_0_8px_#1cd8d2]"
+        style={{ x, y }}
       />
     </div>
   );
